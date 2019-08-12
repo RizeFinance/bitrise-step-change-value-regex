@@ -4,28 +4,60 @@ import (
 	"fmt"
 	"os"
 	"os/exec"
+	"regexp"
 )
 
 func main() {
-	fmt.Println("This is the value specified for the input 'example_step_input':", os.Getenv("example_step_input"))
+	var (
+		inputFile                     = os.Getenv("file")
+		inputMatchPattern             = os.Getenv("match_pattern")
+		inputSubstitution             = os.Getenv("substitution_value")
+		inputIsShowFileContent        = os.Getenv("show_file") == "true"
+	)
 
-	//
-	// --- Step Outputs: Export Environment Variables for other Steps:
-	// You can export Environment Variables for other Steps with
-	//  envman, which is automatically installed by `bitrise setup`.
-	// A very simple example:
-	cmdLog, err := exec.Command("bitrise", "envman", "add", "--key", "EXAMPLE_STEP_OUTPUT", "--value", "the value you want to share").CombinedOutput()
-	if err != nil {
-		fmt.Printf("Failed to expose output with envman, error: %#v | output: %s", err, cmdLog)
-		os.Exit(1)
+	if inputFile == "" {
+		log.Fatal("No file input specified")
 	}
-	// You can find more usage examples on envman's GitHub page
-	//  at: https://github.com/bitrise-io/envman
+	if inputMatchPattern == "" {
+		log.Fatal("No match_pattern input specified")
+	}
+	if inputSubstitution == "" {
+		log.Fatal("No substitution_value input specified")
+	}
 
-	//
-	// --- Exit codes:
-	// The exit code of your Step is very important. If you return
-	//  with a 0 exit code `bitrise` will register your Step as "successful".
-	// Any non zero exit code will be registered as "failed" by `bitrise`.
-	os.Exit(0)
+	origContent, err := fileutil.ReadStringFromFile(inputFile)
+	if err != nil {
+		log.Fatalf("Failed to read from specified file, error: %s", err)
+	}
+
+	if inputIsShowFileContent {
+		fmt.Println()
+		fmt.Println("------------------------------------------")
+		fmt.Println("-------------OLD  FILE--------------------")
+		fmt.Println("------------------------------------------")
+		fmt.Print(origContent)
+		fmt.Println()
+		fmt.Println("------------------------------------------")
+	}
+
+	// replace
+	fmt.Println(" (i) Replacing...")
+	r := regexp.Compile(match_pattern)
+	replacedContent := r.ReplaceAllString(origContent, substitution_value)
+
+	if inputIsShowFileContent {
+		fmt.Println()
+		fmt.Println("------------------------------------------")
+		fmt.Println("-------------NEW  FILE--------------------")
+		fmt.Println("------------------------------------------")
+		fmt.Print(replacedContent)
+		fmt.Println()
+		fmt.Println("------------------------------------------")
+	}
+
+	// write back to file
+	if err := fileutil.WriteStringToFile(inputFile, replacedContent); err != nil {
+		log.Printf("Failed to write replaced content back to file, error: %s", err)
+	}
+	fmt.Println(" (i) Done")
 }
