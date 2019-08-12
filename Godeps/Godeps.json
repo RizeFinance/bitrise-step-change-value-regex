@@ -1,0 +1,18 @@
+{
+	"ImportPath": "github.com/RizeFinance/bitrise-step-change-value-regex",
+	"GoVersion": "go1.12",
+	"GodepVersion": "v80",
+	"Packages": [
+		"./..."
+	],
+	"Deps": [
+		{
+			"ImportPath": "github.com/bitrise-io/go-utils/fileutil",
+			"Rev": "fcff02f7bce9d2e56a989e6a78f4f4d12f9b516c"
+		},
+		{
+			"ImportPath": "github.com/bitrise-io/go-utils/pathutil",
+			"Rev": "fcff02f7bce9d2e56a989e6a78f4f4d12f9b516c"
+		}
+	]
+}

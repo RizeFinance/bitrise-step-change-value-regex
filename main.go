@@ -2,9 +2,10 @@ package main
 
 import (
 	"fmt"
+	"log"
 	"os"
-	"os/exec"
 	"regexp"
+	"github.com/bitrise-io/go-utils/fileutil"
 )
 
 func main() {
@@ -42,8 +43,8 @@ func main() {
 
 	// replace
 	fmt.Println(" (i) Replacing...")
-	r := regexp.Compile(match_pattern)
-	replacedContent := r.ReplaceAllString(origContent, substitution_value)
+	r, _ := regexp.Compile(inputMatchPattern)
+	replacedContent := r.ReplaceAllString(origContent, inputSubstitution)
 
 	if inputIsShowFileContent {
 		fmt.Println()

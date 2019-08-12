@@ -10,7 +10,7 @@
 title: |-
   change-value-regex
 summary: |
-  string substitution via regex
+  String substitution via regex
 description: |
   Use a regex pattern to replace string values within a file
 website: https://github.com/RizeFinance/bitrise-step-change-value-regex
@@ -51,30 +51,45 @@ run_if: ""
 
 deps:
   brew:
-  - name: git
-  - name: wget
+    - name: git
+    - name: wget
   apt_get:
-  - name: git
-  - name: wget
-
+    - name: git
+    - name: wget
 
 toolkit:
   go:
     package_name: github.com/RizeFinance/bitrise-step-change-value-regex
 
-
 inputs:
-  - example_step_input: Default Value - you can leave this empty if you want to
+  - file:
     opts:
-      title: "Example Step Input"
-      summary: Summary. No more than 2-3 sentences.
+      title: "File path"
+      summary: ""
       description: |
-        Description of this input.
-
-        Can be Markdown formatted text.
-      is_expand: true
+        The file that you want to change a value.
       is_required: true
-      value_options: []
+  - match_pattern:
+    opts:
+      title: "Match Pattern"
+      summary: "regexp pattern"
+      description: |
+        locate in file
+      is_required: true
+  - substitution_value:
+    opts:
+      title: "Substitution value"
+      summary: "To replace"
+      description: |
+        new value
+      is_required: true
+  - show_file: "false"
+    opts:
+      title: "Show old and new file content"
+      summary: "For debug"
+      value_options:
+        - "true"
+        - "false"
 
 outputs:
   - EXAMPLE_STEP_OUTPUT:
